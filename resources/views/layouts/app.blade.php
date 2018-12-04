@@ -18,6 +18,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{asset('css/bootstrap-multiselect.css')}}" type="text/css"/>
     <style>
         .twitter-typeahead,
         .tt-hint,
@@ -109,5 +110,6 @@
         </main>
     </div>
     <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
+    <script type="text/javascript" src="{{asset('js/bootstrap-multiselect.js')}}"></script>
 </body>
 </html>

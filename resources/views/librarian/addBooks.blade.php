@@ -89,8 +89,27 @@
                       </div>
                       <textarea name="synopsis" class="form-control" aria-label="With textarea"></textarea>
                     </div>
-
-                    <div class="input-group mb-3">
+                    <a hidden>{{ $categories = App\Category::All() }}</a>
+                    <script type="text/javascript">
+                        $(document).ready(function() {
+                            $('#inputGroupSelect01').multiselect({
+                              buttonWidth: '370px',
+                              maxHeight: 200
+                            });
+                        });
+                    </script>
+                      <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                          <label class="input-group-text" for="inputGroupSelect01">Categories</label>
+                        </div>
+                        <select name="categories[]" class="custom-select" id="inputGroupSelect01" multiple="multiple">
+                          <option>Choose...</option>
+                          @foreach ($categories as $category)
+                          <option value="{{$category->id}}">{{$category->name}}</option>
+                          @endforeach
+                        </select>
+                      </div>
+                    <div class="input-group mb-3 mt-3">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Quantity</span>
                       </div>
@@ -125,6 +144,9 @@
                 <h5 class="mt-0">{{$book->title}}</h5>
                 <h6 class="mt-0">By: {{$book->author}}</h6>
                 {{$book->synopsis}}
+                @foreach ($book->categories as $tempcategory)
+                  {{$tempcategory->name}}
+                @endforeach
               </div>
               <div class="media-footer text-muted">
                 Quantity: {{$book->quantity}}

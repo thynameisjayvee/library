@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Book;
 use Illuminate\Http\Request;
+use App\Category;
 
 class BookController extends Controller
 {
@@ -20,7 +21,7 @@ class BookController extends Controller
 
     public function searchBook(Request $request)
     {
-      return Book::where('title', 'LIKE', '%'.$request->q.'%')->get();
+        return Book::where('title', 'LIKE', '%'.$request->q.'%')->get();
     }
 
     /**
@@ -51,6 +52,12 @@ class BookController extends Controller
         $book->save();
 
         $file->move('books',$file->getClientOriginalName());
+        
+        $categories = $request->get('categories');
+        foreach ($categories as $category) {
+          $data = Category::findOrFail($category);
+          $book->categories()->attach($data);
+        }
 
         return redirect()->back()->with('success', 'The Book has been added Successfully!');;
     }
@@ -74,7 +81,6 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
     }
 
     /**
