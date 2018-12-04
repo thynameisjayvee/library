@@ -18,6 +18,16 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <style>
+        .twitter-typeahead,
+        .tt-hint,
+        .tt-input,
+        .tt-menu{
+            width: auto ! important;
+            font-weight: normal;
+
+        }
+     </style>
 </head>
 <body>
     <div id="app">
@@ -98,5 +108,6 @@
             @yield('content')
         </main>
     </div>
+    <script src="https://twitter.github.io/typeahead.js/releases/latest/typeahead.bundle.js"></script>
 </body>
 </html>

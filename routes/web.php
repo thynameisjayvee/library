@@ -18,4 +18,5 @@ Route::get('/', function () {
 Auth::routes();
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/librarian/addbooks', 'BookController@index')->name('addBooks')->middleware('role:2');
+Route::get('/librarian/find', 'BookController@searchBook');
 Route::post('/librarian/addbooks/add', 'BookController@store')->name('addBookss')->middleware('role:2');

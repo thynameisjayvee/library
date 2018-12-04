@@ -20,7 +20,42 @@
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
           Add Book
         </button>
+          <input type="text" class="form-control mt-3" id="search" placeholder="Type to search books" autocomplete="off" >
+        <script>
+            $(document).ready(function() {
+                var bloodhound = new Bloodhound({
+                    datumTokenizer: Bloodhound.tokenizers.whitespace,
+                    queryTokenizer: Bloodhound.tokenizers.whitespace,
+                    remote: {
+                        url: '/librarian/find?q=%QUERY%',
+                        wildcard: '%QUERY%'
+                    },
+                });
 
+                $('#search').typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                }, {
+                    name: 'books',
+                    source: bloodhound,
+                    display: function(data) {
+                        return data.title  //Input value to be set when you select a suggestion.
+                    },
+                    templates: {
+                        empty: [
+                            '<div class="list-group search-results-dropdown"><div class="list-group-item">Nothing found.</div></div>'
+                        ],
+                        header: [
+                            '<div class="list-group search-results-dropdown">'
+                        ],
+                        suggestion: function(data) {
+                        return '<div style="font-weight:normal; margin-top:-10px ! important;" class="list-group-item">' + data.title + '</div></div>'
+                        }
+                    }
+                });
+            });
+        </script>
         <!-- Modal -->
         <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">

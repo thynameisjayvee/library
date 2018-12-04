@@ -18,6 +18,11 @@ class BookController extends Controller
         return view('librarian.addBooks')->with(compact('books'));
     }
 
+    public function searchBook(Request $request)
+    {
+      return Book::where('title', 'LIKE', '%'.$request->q.'%')->get();
+    }
+
     /**
      * Show the form for creating a new resource.
      *
