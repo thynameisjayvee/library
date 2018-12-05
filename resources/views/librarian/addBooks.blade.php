@@ -4,6 +4,10 @@
   <div class="alert alert-success">
     {{ session()->get('success') }}
   </div>
+@elseif(session()->get('error'))
+  <div class="alert alert-danger">
+    {{ session()->get('error') }}
+  </div>
 @endif
 <script type="text/javascript">
   $(document).ready(function() {
@@ -50,7 +54,9 @@
                             '<div class="list-group search-results-dropdown">'
                         ],
                         suggestion: function(data) {
-                        return '<div style="font-weight:normal; margin-top:-10px ! important;" class="list-group-item">' + data.title + '</div></div>'
+                        return '<div style="font-weight:normal; margin-top:-10px ! important;" class="list-group-item">' + '<a href="http://127.0.0.1:8000/librarian/addbooks/'+data.id+'">'
+                                  + data.title +
+                                    '<a></div>'
                         }
                     }
                 });
@@ -141,16 +147,20 @@
             <div class="media">
               <img class="mr-3" src="{{url('books/', $book->img_url)}}" alt="Generic placeholder image" height="128px;" width="128px;">
               <div class="media-body">
-                <h5 class="mt-0">{{$book->title}}</h5>
-                <h6 class="mt-0">By: {{$book->author}}</h6>
-                {{$book->synopsis}}
-                @foreach ($book->categories as $tempcategory)
-                  {{$tempcategory->name}}
-                @endforeach
+                <h5 class="mt-0"><b>{{$book->title}}</b></h5>
+                <h6 class="mt-0"><b>By:</b> {{$book->author}}</h6>
+                <p style="width:40rem"><b>Synopsis:</b> {{$book->synopsis}}</p>
               </div>
               <div class="media-footer text-muted">
                 Quantity: {{$book->quantity}}
+                <button class="btn btn-light ml-1">Edit</button>
+                <button class="btn btn-light ml-1">Delete</button>
               </div>
+            </div>
+            <div class="card-footer mt-1">
+              @foreach ($book->categories as $tempcategory)
+                Category: {{$tempcategory->name}}
+              @endforeach
             </div>
             @endforeach
           </div>

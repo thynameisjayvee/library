@@ -24,6 +24,11 @@ class BookController extends Controller
         return Book::where('title', 'LIKE', '%'.$request->q.'%')->get();
     }
 
+    public function showBook($id){
+        $books = Book::where('id', $id)->Paginate(1);
+        return view('librarian.addBooks')->with(compact('books'));
+    }
+
     /**
      * Show the form for creating a new resource.
      *
@@ -42,24 +47,38 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
-        $book = new Book();
-        $book->title = $request->get('title');
-        $book->author = $request->get('author');
-        $book->synopsis = $request->get('synopsis');
-        $book->quantity = $request->get('quantity');
-        $file = $request->file('img_url');
-        $book->img_url = $file->getClientOriginalName();
-        $book->save();
-
-        $file->move('books',$file->getClientOriginalName());
-        
-        $categories = $request->get('categories');
-        foreach ($categories as $category) {
-          $data = Category::findOrFail($category);
-          $book->categories()->attach($data);
+        if ($this->ifExist($request->get('title')) == true){
+          return redirect()->back()->with('error', 'The Book already exist!');
         }
+        else{
+          $book = new Book();
+          $book->title = $request->get('title');
+          $book->author = $request->get('author');
+          $book->synopsis = $request->get('synopsis');
+          $book->quantity = $request->get('quantity');
+          $file = $request->file('img_url');
+          $book->img_url = $file->getClientOriginalName();
+          $book->save();
 
-        return redirect()->back()->with('success', 'The Book has been added Successfully!');;
+          $file->move('books',$file->getClientOriginalName());
+
+          $categories = $request->get('categories');
+          foreach ($categories as $category) {
+            $data = Category::findOrFail($category);
+            $book->categories()->attach($data);
+          }
+          return redirect()->back()->with('success', 'The Book has been added Successfully!');
+        }
+    }
+
+    public function ifExist($booktitle){
+        $book = Book::where('title', $booktitle)->count();
+        if ($book == 0){
+          return false;
+        }
+        else{
+          return true;
+        }
     }
 
     /**
