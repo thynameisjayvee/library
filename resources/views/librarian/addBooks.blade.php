@@ -79,21 +79,21 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Title</span>
                       </div>
-                      <input name="title" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input name="title" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" required>
                     </div>
 
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Author</span>
                       </div>
-                      <input name="author" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input name="author" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" required>
                     </div>
 
                     <div class="input-group mb-3">
                       <div class="input-group-prepend">
                         <span class="input-group-text">Synopsis</span>
                       </div>
-                      <textarea name="synopsis" class="form-control" aria-label="With textarea"></textarea>
+                      <textarea name="synopsis" class="form-control" aria-label="With textarea" required></textarea>
                     </div>
                     <a hidden>{{ $categories = App\Category::All() }}</a>
                     <script type="text/javascript">
@@ -108,8 +108,7 @@
                         <div class="input-group-prepend">
                           <label class="input-group-text" for="inputGroupSelect01">Categories</label>
                         </div>
-                        <select name="categories[]" class="custom-select" id="inputGroupSelect01" multiple="multiple">
-                          <option>Choose...</option>
+                        <select name="categories[]" class="custom-select" id="inputGroupSelect01" multiple="multiple" required>
                           @foreach ($categories as $category)
                           <option value="{{$category->id}}">{{$category->name}}</option>
                           @endforeach
@@ -119,11 +118,11 @@
                       <div class="input-group-prepend">
                         <span class="input-group-text" id="basic-addon3">Quantity</span>
                       </div>
-                      <input name="quantity" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3">
+                      <input name="quantity" type="text" class="form-control" id="basic-url" aria-describedby="basic-addon3" required>
                     </div>
 
                     <div class="input-group mb-3">
-                      <input type="file" name="img_url" class="input-group-text">
+                      <input type="file" name="img_url" class="input-group-text" required>
                     </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -149,17 +148,78 @@
               <div class="media-body">
                 <h5 class="mt-0"><b>{{$book->title}}</b></h5>
                 <h6 class="mt-0"><b>By:</b> {{$book->author}}</h6>
-                <p style="width:40rem"><b>Synopsis:</b> {{$book->synopsis}}</p>
+                <p class="responsive" style="width:100%"><b>Synopsis:</b> {{$book->synopsis}}</p>
               </div>
               <div class="media-footer text-muted">
-                Quantity: {{$book->quantity}}
-                <button class="btn btn-light ml-1">Edit</button>
+                <form>
+                Quantity:<input id="bookQty{!! $book->id !!}" type="text" value="{{$book->quantity}}" style="width:30px; text-align:center; border:none" disabled></input>
+                <button id="edit{!! $book->id !!}" type="button" value="Edit">edit</button>
+                <button id="save{!! $book->id !!}" type="button" value="Save">save</button>
+                <!-- <button id="edit{{$book->id}}" class="btn btn-light ml-1" value="{{$book->id}}">Edit</button> -->
+                </form>
+                <script type="text/javascript">
+                $('#save{!! $book->id !!}').hide();
+                $('#edit{!! $book->id !!}').click(function() {
+                  $(this).hide();
+                  $('#save{!! $book->id !!}').show();
+                  document.getElementById('bookQty{!! $book->id !!}').disabled = false;
+                });
+                $('#save{!! $book->id !!}').click(function() {
+                  $(this).hide();
+                  $('#edit{!! $book->id !!}').show();
+                  document.getElementById('bookQty{!! $book->id !!}').disabled = true;
+                });
+                //AJAX STARTS HEREEEEEEEEEEEEEEEEEEEEEEEEEEEe
+                jQuery(document).ready(function(){
+                  jQuery('#save{!! $book->id !!}').click(function(e){
+                     e.preventDefault();
+                     $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                        }
+                    });
+                     jQuery.ajax({
+                        url:  '{!! route('updateBookQty', $book->id) !!}',
+                        method: 'patch',
+                        data: {
+                           quantity: jQuery('#bookQty{!! $book->id !!}').val()
+                        },
+                        success: function(result){
+                           console.log(result);
+                           alert({!! $book->id !!});
+                           jQuery('.alert').show();
+                           jQuery('.alert').html(result.success);
+                        }});
+                     });
+                  });
+                //AJAX ENDS HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
+
+                  /*
+                  document.getElementById("edit{!! $book->id !!}").onclick = buttonState;
+                  function buttonState(){
+                    var state = document.getElementById("edit{!! $book->id !!}").innerHTML;
+                    if (state == "Edit"){
+                      document.getElementById('bookQty').disabled = false;
+                      document.getElementById("edit{!! $book->id !!}").innerHTML = "Save";
+                    }
+                    else{
+                      document.getElementById('bookQty').disabled = true;
+                      document.getElementById("edit{!! $book->id !!}").innerHTML = "Edit";
+                    }
+                    return state;
+                  }
+                  */
+                </script>
                 <button class="btn btn-light ml-1">Delete</button>
               </div>
             </div>
             <div class="card-footer mt-1">
+              <b>Category:</b>
               @foreach ($book->categories as $tempcategory)
-                Category: {{$tempcategory->name}}
+               {{$tempcategory->name}}
+               @if (!$loop->last)
+               ,
+               @endif
               @endforeach
             </div>
             @endforeach

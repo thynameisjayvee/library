@@ -47,10 +47,20 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $request->validate([
+          'title'=>'required',
+          'author'=> 'required',
+          'synopsis' => 'required',
+          'quantity' => 'required',
+          'img_url' => 'required',
+          'categories' => 'required'
+        ]);
+
         if ($this->ifExist($request->get('title')) == true){
           return redirect()->back()->with('error', 'The Book already exist!');
         }
         else{
+
           $book = new Book();
           $book->title = $request->get('title');
           $book->author = $request->get('author');
@@ -109,9 +119,10 @@ class BookController extends Controller
      * @param  \App\Book  $book
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Book $book)
+    public function update(Request $request, $id)
     {
-        //
+        $book = Book::findOrFail($id)->update($request->all());
+        return response()->json(['success'=>'Data is successfully added']);
     }
 
     /**

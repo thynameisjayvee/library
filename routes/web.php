@@ -20,4 +20,5 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/librarian/addbooks', 'BookController@index')->name('addBooks')->middleware('role:2');
 Route::get('/librarian/addbooks/{id}', 'BookController@showBook')->name('showbook')->middleware('role:2');
 Route::get('/librarian/find', 'BookController@searchBook');
+Route::patch('/librarian/addbooks/update/{id}', 'BookController@update')->name('updateBookQty')->middleware('role:2');
 Route::post('/librarian/addbooks/add', 'BookController@store')->name('addBookss')->middleware('role:2');
