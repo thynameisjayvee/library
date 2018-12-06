@@ -89,44 +89,52 @@
       </div>
     </div>
   </div>
-  <div class="row justify-content-center">
-    <div class="col-md-8">
-      <h1>More Books</h1>
-    </div>
-    <div class="col-md-8">
-      <div class="card-deck">
-          <div class="card">
-            <img class="card-img-top" src="{{asset('angels&demons.jpg')}}" alt="Card image cap" height="200px">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">Last updated 3 mins ago</small>
-            </div>
-          </div>
-          <div class="card">
-            <img class="card-img-top" src="{{asset('davinci.jpg')}}" alt="Card image cap" height="200px">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">Last updated 3 mins ago</small>
-            </div>
-          </div>
-          <div class="card">
-            <img class="card-img-top" src="{{asset('inferno.jpg')}}" alt="Card image cap" height="200px">
-            <div class="card-body">
-              <h5 class="card-title">Card title</h5>
-              <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-            </div>
-            <div class="card-footer">
-              <small class="text-muted">Last updated 3 mins ago</small>
-            </div>
-          </div>
-        </div>
-    </div>
+  <div id="tag_container" class="row justify-content-center">
+  @include('bookdecks')
+  <script type="text/javascript">
+      $(window).on('hashchange', function() {
+          if (window.location.hash) {
+              var page = window.location.hash.replace('#', '');
+              if (page == Number.NaN || page <= 0) {
+                  return false;
+              }else{
+                  getData(page);
+              }
+          }
+      });
+
+      $(document).ready(function()
+      {
+          $(document).on('click', '.pagination a',function(event)
+          {
+              event.preventDefault();
+
+              $('li').removeClass('active');
+              $(this).parent('li').addClass('active');
+
+              var myurl = $(this).attr('href');
+              var page=$(this).attr('href').split('page=')[1];
+
+              getData(page);
+          });
+
+      });
+
+      function getData(page){
+          $.ajax(
+          {
+              url: '?page=' + page,
+              type: "get",
+              datatype: "html"
+          }).done(function(data){
+              $("#tag_container").empty().html(data);
+              location.hash = page;
+          }).fail(function(jqXHR, ajaxOptions, thrownError){
+                alert('No response from server');
+          });
+      }
+  </script>
+  <!-- end of pagination script -->
   </div>
 </div>
 @endsection

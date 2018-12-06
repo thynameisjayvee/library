@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Book;
 
 class HomeController extends Controller
 {
@@ -21,8 +22,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        return view('home');
+        $books = Book::Paginate(3);
+
+        if ($request->ajax()){
+          return view('bookdecks', compact('books'));
+        }
+
+        return view('home')->with(compact('books'));
     }
 }

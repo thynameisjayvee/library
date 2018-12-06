@@ -193,24 +193,7 @@
                      });
                   });
                 //AJAX ENDS HEREEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE
-
-                  /*
-                  document.getElementById("edit{!! $book->id !!}").onclick = buttonState;
-                  function buttonState(){
-                    var state = document.getElementById("edit{!! $book->id !!}").innerHTML;
-                    if (state == "Edit"){
-                      document.getElementById('bookQty').disabled = false;
-                      document.getElementById("edit{!! $book->id !!}").innerHTML = "Save";
-                    }
-                    else{
-                      document.getElementById('bookQty').disabled = true;
-                      document.getElementById("edit{!! $book->id !!}").innerHTML = "Edit";
-                    }
-                    return state;
-                  }
-                  */
                 </script>
-                <button class="btn btn-light ml-1">Delete</button>
               </div>
             </div>
             <div class="card-footer mt-1">
